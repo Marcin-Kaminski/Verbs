@@ -129,5 +129,4 @@ Route::screen('/cards/examples/cards', ExampleCardsScreen::class)->name('platfor
 Route::screen('verb/add', AddVerbScreen::class)->name('platform.verb.add');
 Route::screen('verbs/list', VerbsListScreen::class)->name('platform.verbs.list');
 Route::screen('verbs/learn', VerbsLearningScreen::class)->name('platform.verbs.learn');
-Route::screen('verbs/ratio', ratio::class)->name('platform.verbs.ratio');
 //Route::screen('idea', Idea::class, 'platform.screens.idea');

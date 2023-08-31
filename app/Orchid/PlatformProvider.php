@@ -69,9 +69,6 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('plus')
                 ->route('platform.add.verb'),
 
-            Menu::make('r2r ratio')
-                ->icon('plus')
-                ->route('platform.verbs.ratio'),
 //            Menu::make('Tasks')
 //                ->icon('check')
 //                ->route('platform.task')
