@@ -37,7 +37,7 @@ class VerbsLearningScreen extends Screen
         $randomVerb = (Cache::get('random_verb'));
         if (!$randomVerb ) {
             $this->drawAndSaveVerbToCache($verbsLeftToLearn);
-            $randomVerb = (Cache::get('random_verb'));
+            $randomVerb = (Cache::get('random_verb')); //
         }
 
         return [
