@@ -5,19 +5,21 @@ namespace App\Orchid\Screens;
 use App\Models\Verb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Orchid\Screen\Action;
 use Orchid\Support\Facades\Alert;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
+use Ramsey\Uuid\Generator\DefaultNameGenerator;
 
 class VerbsLearningScreen extends Screen
 {
-    private $randomVerbInPolish;
-    private $randomVerbInInfinitive;
-    private $randomVerbInPastSimple;
-    private $randomVerbInPastParticiple;
+    private string $randomVerbInPolish;
+    private string $randomVerbInInfinitive;
+    private string $randomVerbInPastSimple;
+    private string $randomVerbInPastParticiple;
     /**
      * Fetch data to be displayed on the screen.
      *
@@ -26,17 +28,14 @@ class VerbsLearningScreen extends Screen
     public function query(): iterable
     {
         $verbsLeftToLearn = Cache::get('verbs_left_to_learn');
-        if (!$verbsLeftToLearn){
-            $allVerbs = Verb::get()->toArray();
-            $allVerbsArray = [];
-            foreach ($allVerbs as $Verb) {
-                $allVerbsArray[] = $Verb;
-            }
-            $verbsLeftToLearn = Cache::put('verbs_left_to_learn', $allVerbsArray, now()->addMinutes(30));
+        if (!$verbsLeftToLearn) {
+            $this->addAllVerbsToCache();
+            $verbsLeftToLearn = Cache::get('verbs_left_to_learn');
         }
-        $randomVerb = Cache::get('random_verb');
-        if (!$randomVerb) {
+        $randomVerb = (Cache::get('random_verb'));
+        if (!$randomVerb ) {
             $this->drawAndSaveVerbToCache($verbsLeftToLearn);
+            $randomVerb = (Cache::get('random_verb'));
         }
         $this->randomVerbInPolish = $randomVerb['polish'];
         $this->randomVerbInInfinitive = $randomVerb['infinitive'];
@@ -58,7 +57,7 @@ class VerbsLearningScreen extends Screen
     /**
      * The screen's action buttons.
      *
-     * @return \Orchid\Screen\Action[]
+     * @return Action[]
      */
     public function commandBar(): iterable
     {
@@ -103,7 +102,16 @@ class VerbsLearningScreen extends Screen
               ->title($this->randomVerbInPolish)
         ];
     }
-    public function checkTranslation(Request $request)
+    public function addAllVerbsToCache(): void
+    {
+        $allVerbs = (new Verb)->get()->toArray();
+        $allVerbsArray = [];
+        foreach ($allVerbs as $Verb) {
+            $allVerbsArray[] = $Verb;
+        }
+        Cache::put('verbs_left_to_learn', $allVerbsArray, now()->addMinutes(30));
+    }
+    public function checkTranslation(Request $request): void
     {
         $verbInInfinitiveInput = $request->input('verbInInfinitive');
         $verbInPastSimpleInput = $request->input('verbInPastSimple');
@@ -125,7 +133,7 @@ class VerbsLearningScreen extends Screen
             Alert::error('Niestety tym razem się nie udało. Spróbuj ponownie!');
         }
     }
-    public function unsetVerbFromArray(string $verbToRemove)
+    public function unsetVerbFromArray(string $verbToRemove): void
     {
         $availableVerbs = Cache::get('verbs_left_to_learn');
         foreach ($availableVerbs as $key => $verb) {
@@ -135,12 +143,12 @@ class VerbsLearningScreen extends Screen
         }
         Cache::put('verbs_left_to_learn', $availableVerbs, now()->addMinutes(30));
     }
-    public function drawVerb()
+    public function drawVerb(): void
     {
         $verbs = Cache::get('verbs_left_to_learn');
         $this->drawAndSaveVerbToCache($verbs);
     }
-    public function showTranslation()
+    public function showTranslation(): void
     {
         $randomVerb = Cache::get('random_verb');
         $this->randomVerbInPolish = $randomVerb['polish'];
@@ -149,7 +157,7 @@ class VerbsLearningScreen extends Screen
         $this->randomVerbInPastParticiple = $randomVerb['past_participle'];
     }
 
-    public function drawAndSaveVerbToCache($verbsArray)
+    public function drawAndSaveVerbToCache($verbsArray): void
     {
         $randomKey = array_rand($verbsArray);
         $randomVerb = [
