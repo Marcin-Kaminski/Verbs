@@ -146,7 +146,7 @@ class VerbsLearningScreen extends Screen
         $this->randomVerbInPolish = $randomVerb['polish'];
         $this->randomVerbInInfinitive = $randomVerb['infinitive'];
         $this->randomVerbInPastSimple = $randomVerb['past_simple'];
-        $this->randomVerbInPastParticiple = $randomVerb['past_participle'];
+        $this->randomVerbInPastParticiple = $randomVerb['past_participle']; //
     }
 
     public function drawAndSaveVerbToCache($verbsArray)
