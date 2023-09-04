@@ -25,8 +25,8 @@ class VerbsLearningScreenTest extends TestCase
 
     public function tearDown(): void
     {
-        Cache::flush();
         parent::tearDown();
+        Cache::flush();
     }
     public function testShouldPassIfClearningCacheWorks(): void
     {
