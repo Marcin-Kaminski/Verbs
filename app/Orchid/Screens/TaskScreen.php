@@ -99,6 +99,6 @@ class TaskScreen extends Screen
 
     public function delete (Task $task)
     {
-        $task->delete();
+        $task->delete(); // test contribution, usun kiedys
     }
 }
