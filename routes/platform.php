@@ -2,26 +2,25 @@
 
 declare(strict_types=1);
 
-use App\Orchid\Screens\ratio;
-use App\Orchid\Screens\VerbsLearningScreen;
-use Tabuna\Breadcrumbs\Trail;
 use App\Orchid\Screens\AddVerbScreen;
-use Illuminate\Support\Facades\Route;
+use App\Orchid\Screens\Examples\ExampleActionsScreen;
+use App\Orchid\Screens\Examples\ExampleCardsScreen;
+use App\Orchid\Screens\Examples\ExampleChartsScreen;
+use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
+use App\Orchid\Screens\Examples\ExampleFieldsScreen;
+use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
+use App\Orchid\Screens\Examples\ExampleScreen;
+use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
-use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
-use App\Orchid\Screens\Examples\ExampleCardsScreen;
-use App\Orchid\Screens\Examples\ExampleChartsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsScreen;
-use App\Orchid\Screens\Examples\ExampleActionsScreen;
-use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
-use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
+use App\Orchid\Screens\VerbsLearningScreenx;
 use App\Orchid\Screens\VerbsListScreen;
+use Illuminate\Support\Facades\Route;
+use Tabuna\Breadcrumbs\Trail;
 
 /*
 |--------------------------------------------------------------------------
@@ -110,7 +109,7 @@ Route::screen('verbsList', VerbsListScreen::class)
                     ->push('verbsList');
             });
 
-Route::screen('verbsLearning', VerbsLearningScreen::class)
+Route::screen('verbsLearning', VerbsLearningScreenx::class)
             ->name('platform.verbs.learning')
             ->breadcrumbs(function (Trail $trail){
                 return $trail
@@ -128,5 +127,5 @@ Route::screen('/charts/examples/charts', ExampleChartsScreen::class)->name('plat
 Route::screen('/cards/examples/cards', ExampleCardsScreen::class)->name('platform.example.cards');
 Route::screen('verb/add', AddVerbScreen::class)->name('platform.verb.add');
 Route::screen('verbs/list', VerbsListScreen::class)->name('platform.verbs.list');
-Route::screen('verbs/learn', VerbsLearningScreen::class)->name('platform.verbs.learn');
+Route::screen('verbs/learn', VerbsLearningScreenx::class)->name('platform.verbs.learn');
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
