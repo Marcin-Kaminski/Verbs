@@ -14,7 +14,7 @@ use Orchid\Support\Color;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
-class VerbsLearningScreenx extends Screen
+class VerbsLearningScreen extends Screen
 {
     private string $randomVerbInPolish;
     private string $randomVerbInInfinitive;
@@ -37,7 +37,7 @@ class VerbsLearningScreenx extends Screen
         $randomVerb = (Cache::get('random_verb'));
         if (!$randomVerb ) {
             $this->drawAndSaveVerbToCache($verbsLeftToLearn);
-            $randomVerb = (Cache::get('random_verb')); //
+            $randomVerb = (Cache::get('random_verb'));
         }
 
         return [
@@ -92,7 +92,7 @@ class VerbsLearningScreenx extends Screen
         return [
             Layout::modal('Tłumaczenie', [
                 Layout::view('translation')
-            ])->withoutApplyButton(),
+            ]),
             Layout::view('script'),
             Layout::block([
                 Layout::view('script'),
@@ -121,7 +121,7 @@ class VerbsLearningScreenx extends Screen
         foreach ($allVerbs as $Verb) {
             $allVerbsArray[] = $Verb;
         }
-        Cache::put('verbs_left_to_learn', $allVerbsArray, now()->addHours(24));
+        Cache::put('verbs_left_to_learn', $allVerbsArray, now()->addMinutes(30));
     }
     public function checkTranslation(Request $request): void
     {
@@ -156,15 +156,15 @@ class VerbsLearningScreenx extends Screen
                 unset($availableVerbs[$key]);
             }
         }
-        Cache::put('verbs_left_to_learn', $availableVerbs, now()->addHours(24));
+        Cache::put('verbs_left_to_learn', $availableVerbs, now()->addMinutes(30));
     }
-    public function incrementVerbHowManyTimes(string $verbToIncrement)
+    public function incrementVerbHowManyTimes(string $verbToRemove): int
     {
         $availableVerbs = Cache::get('verbs_left_to_learn');
         foreach ($availableVerbs as $key => $verb) {
-            if ($verb['verb_in_polish'] === strtolower($verbToIncrement)) {
+            if ($verb['verb_in_polish'] === strtolower($verbToRemove)) {
                 $availableVerbs[$key]['how_many_times']++;
-                Cache::put('verbs_left_to_learn', $availableVerbs, now()->addHours(24));
+                Cache::put('verbs_left_to_learn', $availableVerbs, now()->addMinutes(30));
                 return $availableVerbs[$key]['how_many_times'];
             }
         }
@@ -175,7 +175,16 @@ class VerbsLearningScreenx extends Screen
         $verbs = Cache::get('verbs_left_to_learn');
         $this->drawAndSaveVerbToCache($verbs);
     }
-    public function drawAndSaveVerbToCache(array $verbsArray): void
+    public function showTranslation(): void
+    {
+        $randomVerb = Cache::get('random_verb');
+        $this->randomVerbInPolish = $randomVerb['polish'];
+        $this->randomVerbInInfinitive = $randomVerb['infinitive'];
+        $this->randomVerbInPastSimple = $randomVerb['past_simple'];
+        $this->randomVerbInPastParticiple = $randomVerb['past_participle']; //
+    }
+
+    public function drawAndSaveVerbToCache($verbsArray): void
     {
         $randomKey = array_rand($verbsArray);
         $randomVerb = [
@@ -185,9 +194,9 @@ class VerbsLearningScreenx extends Screen
             'past_participle' => ucfirst($verbsArray[$randomKey]['verb_in_past_participle']),
             'how_many_times' => $verbsArray[$randomKey]['how_many_times']
         ];
-        Cache::put('random_verb', $randomVerb, now()->addHours(24));
+        Cache::put('random_verb', $randomVerb, now()->addMinutes(30));
     }
-    public function clearCache(): void
+    public function clearCache()
     {
         Cache::flush();
     }
