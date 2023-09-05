@@ -82,7 +82,7 @@ class VerbsListScreen extends Screen
                         TD::make('verb_in_past_participle', 'Past Participle'),
                         TD::make('edytuj')
                             ->align('right')
-                            ->render(function (Verb $verb){
+                            ->render(function (Verb $verb) {
                                 return  ModalToggle::make('Edytuj czasownik')
                                     ->modal('Edytuj czasownik')
                                     ->type(Color::INFO)
@@ -91,8 +91,8 @@ class VerbsListScreen extends Screen
                             }),
                         TD::make('usuń')
                             ->align('right')
-                            ->render(function (Verb $verb){
-                               return Button::make('Usuń czasownik')
+                            ->render(function (Verb $verb) {
+                                return Button::make('Usuń czasownik')
                                    ->type(Color::ERROR())
                                    ->method('editVerb')
                                    ->confirm('Jesteś pewny, że chcesz usunąć ten czasownik z bazy?');
@@ -112,19 +112,19 @@ class VerbsListScreen extends Screen
         $verbId = $request->all()['id'];
         $updates = [];
         $flag = false;
-        if ($input['editVerbInPolish'] !== null){
+        if ($input['editVerbInPolish'] !== null) {
             $updates['verb_in_polish'] = $input['editVerbInPolish'];
             $flag = true;
         }
-        if ($input['editVerbInInfinitive'] !== null){
+        if ($input['editVerbInInfinitive'] !== null) {
             $updates['verb_in_infinitive'] = $input['editVerbInInfinitive'];
             $flag = true;
         }
-        if ($input['editVerbInPastSimple'] !== null){
+        if ($input['editVerbInPastSimple'] !== null) {
             $updates['verb_in_past_simple'] = $input['editVerbInPastSimple'];
             $flag = true;
         }
-        if ($input['editVerbInPastParticiple'] !== null){
+        if ($input['editVerbInPastParticiple'] !== null) {
             $updates['verb_in_past_participle'] = $input['editVerbInPastParticiple'];
             $flag = true;
         }
@@ -132,5 +132,4 @@ class VerbsListScreen extends Screen
         $flag ? Alert::success(sprintf('Pomyślnie zedytowano czasownik'))
             : Alert::error(sprintf('Nie podano żadnych wartości do zedytowania'));
     }
-
 }

@@ -95,7 +95,7 @@ Route::screen('example', ExampleScreen::class)
 
 Route::screen('addVerb', AddVerbScreen::class)
             ->name('platform.add.verb')
-            ->breadcrumbs(function (Trail $trail){
+            ->breadcrumbs(function (Trail $trail) {
                 return $trail
                     ->parent('platform.index')
                     ->push('addVerb');
@@ -103,7 +103,7 @@ Route::screen('addVerb', AddVerbScreen::class)
 
 Route::screen('verbsList', VerbsListScreen::class)
             ->name('platform.verbs.list')
-            ->breadcrumbs(function (Trail $trail){
+            ->breadcrumbs(function (Trail $trail) {
                 return $trail
                     ->parent('platform.index')
                     ->push('verbsList');
@@ -111,7 +111,7 @@ Route::screen('verbsList', VerbsListScreen::class)
 
 Route::screen('verbsLearning', VerbsLearningScreenx::class)
             ->name('platform.verbs.learning')
-            ->breadcrumbs(function (Trail $trail){
+            ->breadcrumbs(function (Trail $trail) {
                 return $trail
                     ->parent('platform.index')
                     ->push('verbsLearning');

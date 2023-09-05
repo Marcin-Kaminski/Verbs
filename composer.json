@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^2.12",
         "orchid/platform": "^14.6",
+        "squizlabs/php_codesniffer": "^3.7",
         "vxm/laravel-async": "^4.0"
     },
     "require-dev": {

@@ -59,7 +59,7 @@ class AddVerbScreen extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::tabs ([
+            Layout::tabs([
                 "Dodaj Czasownik" => [
                     Layout::block([
                         Layout::rows([
@@ -90,12 +90,13 @@ class AddVerbScreen extends Screen
                                 ->rows(5),
                         ])
                     ])  ->title('Dodaj nowy czasownik do bazy danych')
-                            ->description('PL - wiadomo (spać) <br> Infinitive - bezokolicznik (to sleep) <br> Past Simple - czas przeszły  (slept) <br> Past Participle - sam nie wiem (slept)')
+                            ->description('PL - wiadomo (spać) <br> Infinitive - bezokolicznik (to sleep) <br>
+                                    Past Simple - czas przeszły  (slept) <br> Past Participle - sam nie wiem (slept)')
                             ->commands(
-                            Button::make('Zapisz czasownik do bazy')
-                            ->type(Color::PRIMARY())
-                            ->method('addVerbsToDb')
-                        )
+                                Button::make('Zapisz czasownik do bazy')
+                                ->type(Color::PRIMARY())
+                                ->method('addVerbsToDb')
+                            )
                 ],
             ])
         ];
@@ -106,11 +107,15 @@ class AddVerbScreen extends Screen
         $isVerbAlreadyInBase = false;
         $verbInPolish = $data['verbInPolish'];
         $verbs = Verb::get()->toArray();
-        foreach($verbs as $verb){
-            $isVerbAlreadyInBase = $verb['verb_in_polish'] === $data['verbInPolish'] ? true : $isVerbAlreadyInBase ;
-            $isVerbAlreadyInBase = $verb['verb_in_infinitive'] === $data['verbInInfinitive'] ? true : $isVerbAlreadyInBase ;
-            $isVerbAlreadyInBase = $verb['verb_in_past_simple'] === $data['verbInPastSimple'] ? true : $isVerbAlreadyInBase ;
-            $isVerbAlreadyInBase = $verb['verb_in_past_participle'] === $data['verbInPastParticiple'] ? true : $isVerbAlreadyInBase ;
+        foreach ($verbs as $verb) {
+            $isVerbAlreadyInBase =
+                $verb['verb_in_polish'] === $data['verbInPolish'] ? true : $isVerbAlreadyInBase ;
+            $isVerbAlreadyInBase =
+                $verb['verb_in_infinitive'] === $data['verbInInfinitive'] ? true : $isVerbAlreadyInBase ;
+            $isVerbAlreadyInBase =
+                $verb['verb_in_past_simple'] === $data['verbInPastSimple'] ? true : $isVerbAlreadyInBase ;
+            $isVerbAlreadyInBase =
+                $verb['verb_in_past_participle'] === $data['verbInPastParticiple'] ? true : $isVerbAlreadyInBase ;
         }
         if (!$isVerbAlreadyInBase) {
             Verb::insert([

@@ -36,4 +36,3 @@ class Task extends Model
         echo $name;
     }
 }
-

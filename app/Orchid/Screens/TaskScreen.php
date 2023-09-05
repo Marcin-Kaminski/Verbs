@@ -84,7 +84,7 @@ class TaskScreen extends Screen
         ];
     }
 
-    public function create (Request $request)
+    public function create(Request $request)
     {
         $request->validate([
             'task.name' => 'required|max:255',
@@ -97,8 +97,8 @@ class TaskScreen extends Screen
         $task->save();
     }
 
-    public function delete (Task $task)
+    public function delete(Task $task)
     {
-        $task->delete(); // test contribution, usun kiedys
+        $task->delete();
     }
 }
