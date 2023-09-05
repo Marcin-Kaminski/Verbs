@@ -34,69 +34,38 @@ class PlatformProvider extends OrchidServiceProvider
     public function menu(): array
     {
         return [
-            // Menu::make('Get Started')
-            //     ->icon('bs.book')
-            //     ->title('Navigation')
-            //     ->route(config('platform.index')),
+            Menu::make('Nauka Słówek')
+                ->icon('eyeglasses')
+                ->title('Norweski')
+                ->route('platform.norwegian.words.learn'),
 
-            // Menu::make('Example Screen')
-            //     ->icon('bs.collection')
-            //     ->route('platform.example')
-            //     ->badge(fn () => 6),
+            Menu::make('Lista Słówek')
+                ->icon('list')
+                ->route('platform.norwegian.words.list'),
 
-            // Menu::make('Form Elements')
-            //     ->icon('bs.journal')
-            //     ->route('platform.example.fields')
-            //     ->active('*/form/examples/*'),
+            Menu::make('Dodaj Słówka Do Bazy')
+                ->icon('plus')
+                ->route('platform.norwegian.words.add'),
 
-            // Menu::make('Overview Layouts')
-            //     ->icon('bs.columns-gap')
-            //     ->route('platform.example.layouts')
-            //     ->active('*/layout/examples/*'),
-
-            // Menu::make('Charts')
-            //     ->icon('bs.bar-chart')
-            //     ->route('platform.example.charts'),
-            Menu::make('Szybka Powtórka')
-                ->icon('controller')
-                ->route('platform.verbs.learn'),
+            Menu::make('Nauka Czasowników')
+                ->icon('eyeglasses')
+                ->title('Angielski')
+                ->route('platform.english.verbs.learn'),
 
             Menu::make('Lista Czasowników')
                 ->icon('list')
-                ->route('platform.verbs.list'),
+                ->route('platform.english.verbs.list'),
 
             Menu::make('Dodaj Czasownik Do Bazy')
                 ->icon('plus')
-                ->route('platform.add.verb'),
+                ->route('platform.english.verbs.add'),
 
-//            Menu::make('Tasks')
-//                ->icon('check')
-//                ->route('platform.task')
-//                ->divider(),`
-//
-//            Menu::make(__('Users'))
-//                ->icon('bs.people')
-//                ->route('platform.systems.users')
-//                ->permission('platform.systems.users')
-//                ->title(__('Access Controls')),
-//
-//            Menu::make(__('Roles'))
-//                ->icon('bs.lock')
-//                ->route('platform.systems.roles')
-//                ->permission('platform.systems.roles')
-//                ->divider(),
-//
-//            Menu::make('Documentation')
-//                ->title('Docs')
-//                ->icon('bs.box-arrow-up-right')
-//                ->url('https://orchid.software/en/docs')
-//                ->target('_blank'),
-//
-//            Menu::make('Changelog')
-//                ->icon('bs.box-arrow-up-right')
-//                ->url('https://github.com/orchidsoftware/platform/blob/master/CHANGELOG.md')
-//                ->target('_blank')
-//                ->badge(fn () => Dashboard::version(), Color::DARK),
+            Menu::make(__('Użytkownicy'))
+                ->icon('bs.people')
+                ->route('platform.systems.users')
+                ->permission('platform.systems.users')
+                ->title(__('Ustawienia')),
+
         ];
     }
 

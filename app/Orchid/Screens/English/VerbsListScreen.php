@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Orchid\Screens;
+namespace App\Orchid\Screens\English;
 
-use App\Models\Verb;
+use App\Models\EnglishVerbs;
 use Illuminate\Http\Request;
-use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Actions\ModalToggle;
-use Orchid\Screen\TD;
-use Orchid\Screen\Screen;
-use Orchid\Support\Color;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\ModalToggle;
+use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Screen;
+use Orchid\Screen\TD;
+use Orchid\Support\Color;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
@@ -23,7 +23,7 @@ class VerbsListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'verbs' => Verb::latest()->get()
+            'verbs' => EnglishVerbs::latest()->get()
         ];
     }
 
@@ -58,7 +58,6 @@ class VerbsListScreen extends Screen
         return [
             Layout::tabs([
                 'Lista Czasowników' => ([
-                    Layout::view('script'),
                     Layout::modal('Edytuj czasownik', [
                         Layout::rows([
                             Input::make('editVerbInPolish')
@@ -82,7 +81,7 @@ class VerbsListScreen extends Screen
                         TD::make('verb_in_past_participle', 'Past Participle'),
                         TD::make('edytuj')
                             ->align('right')
-                            ->render(function (Verb $verb) {
+                            ->render(function (EnglishVerbs $verb) {
                                 return  ModalToggle::make('Edytuj czasownik')
                                     ->modal('Edytuj czasownik')
                                     ->type(Color::INFO)
@@ -91,7 +90,7 @@ class VerbsListScreen extends Screen
                             }),
                         TD::make('usuń')
                             ->align('right')
-                            ->render(function (Verb $verb) {
+                            ->render(function (EnglishVerbs $verb) {
                                 return Button::make('Usuń czasownik')
                                    ->type(Color::ERROR())
                                    ->method('editVerb')
@@ -102,7 +101,7 @@ class VerbsListScreen extends Screen
             ])
         ];
     }
-    public function delete(Verb $verb): void
+    public function delete(EnglishVerbs $verb): void
     {
         $verb->delete();
     }
@@ -128,7 +127,7 @@ class VerbsListScreen extends Screen
             $updates['verb_in_past_participle'] = $input['editVerbInPastParticiple'];
             $flag = true;
         }
-        Verb::where('id', $verbId)->update($updates);
+        EnglishVerbs::where('id', $verbId)->update($updates);
         $flag ? Alert::success(sprintf('Pomyślnie zedytowano czasownik'))
             : Alert::error(sprintf('Nie podano żadnych wartości do zedytowania'));
     }

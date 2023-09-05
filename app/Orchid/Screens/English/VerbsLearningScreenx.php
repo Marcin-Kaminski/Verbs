@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Orchid\Screens;
+namespace App\Orchid\Screens\English;
 
-use App\Models\Verb;
+use App\Models\EnglishVerbs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Action;
@@ -17,10 +17,6 @@ use Orchid\Support\Facades\Layout;
 
 class VerbsLearningScreenx extends Screen
 {
-    private string $randomVerbInPolish;
-    private string $randomVerbInInfinitive;
-    private string $randomVerbInPastSimple;
-    private string $randomVerbInPastParticiple;
     private int $howManyTimesBeforeItIsGone = 1;
 
     /**
@@ -40,7 +36,6 @@ class VerbsLearningScreenx extends Screen
             $this->drawAndSaveVerbToCache($verbsLeftToLearn);
             $randomVerb = (Cache::get('random_verb'));
         }
-//        dd($randomVerb);
         $verbForm = (Cache::get('verb_form'));
         $verbForm = !$verbForm ? 'verb_in_polish' : $verbForm;
         $allErrors = (Cache::get('all_errors'));
@@ -48,10 +43,10 @@ class VerbsLearningScreenx extends Screen
 
         return [
             'verbs' => [
-                'verb_in_polish' => $this->randomVerbInPolish = $randomVerb['verb_in_polish'],
-                'verb_in_infinitive' => $this->randomVerbInInfinitive = $randomVerb['verb_in_infinitive'],
-                'verb_in_past_simple' => $this->randomVerbInPastSimple = $randomVerb['verb_in_past_simple'],
-                'verb_in_past_participle' => $this->randomVerbInPastParticiple = $randomVerb['verb_in_past_participle'],
+                'verb_in_polish' => $randomVerb['verb_in_polish'],
+                'verb_in_infinitive' => $randomVerb['verb_in_infinitive'],
+                'verb_in_past_simple' => $randomVerb['verb_in_past_simple'],
+                'verb_in_past_participle' => $randomVerb['verb_in_past_participle'],
                 'errors' => $randomVerb['errors']
             ],
             'verbForm' => $verbForm,
@@ -99,7 +94,7 @@ class VerbsLearningScreenx extends Screen
     {
         return [
             Layout::modal('Tłumaczenie', [
-                Layout::view('translation')
+                Layout::view('english.translation')
             ]),
             Layout::modal('Ustawienia', Layout::rows([
                 Select::make('learningMode')
@@ -124,7 +119,7 @@ class VerbsLearningScreenx extends Screen
                     ->help('Czasownik zniknie z puli losowanych do nauczenia po tylu razach
                 (oczywiście dobrze przetłumaczonych), ile wybierzesz')
             ])),
-            Layout::view('script'),
+            Layout::view('english.script'),
             Layout::block([
                 Layout::rows([
                     Input::make('verb_in_polish')
@@ -155,11 +150,11 @@ class VerbsLearningScreenx extends Screen
         Cache::put('verb_form', $verbForm, now()->addHours(24));
         $howManyTimesBeforeItIsGone = $request->input('howManyTimesBeforeItIsGone');
         Cache::put('howManyTimesBeforeItIsGone', $howManyTimesBeforeItIsGone, now()->addHours(24));
-    }
+    } /** @todo nie działa howmanytimes, trezbaby zrobić to na $this-> */
 
     public function addAllVerbsToCache(): void
     {
-        $allVerbs = (new Verb)->get()->toArray();
+        $allVerbs = (new EnglishVerbs)->get()->toArray();
         $allVerbsArray = [];
         foreach ($allVerbs as $Verb) {
             $allVerbsArray[] = $Verb;

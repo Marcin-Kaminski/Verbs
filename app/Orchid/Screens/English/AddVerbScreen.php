@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Orchid\Screens;
+namespace App\Orchid\Screens\English;
 
-use App\Models\Verb;
-use Orchid\Screen\TD;
+use App\Models\EnglishVerbs;
+use Illuminate\Http\Request;
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
-use Illuminate\Http\Request;
-use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Alert;
-use Illuminate\Support\Facades\DB;
-use Orchid\Screen\Fields\TextArea;
 use Orchid\Support\Facades\Layout;
 
 class AddVerbScreen extends Screen
@@ -23,9 +21,7 @@ class AddVerbScreen extends Screen
      */
     public function query(): iterable
     {
-        return [
-            'verbs' => Verb::latest()->get()
-        ];
+        return [];
     }
     /**
      * Display header description.
@@ -105,26 +101,18 @@ class AddVerbScreen extends Screen
     {
         $data = $request->input();
         $isVerbAlreadyInBase = false;
-        $verbInPolish = $data['verbInPolish'];
-        $verbs = Verb::get()->toArray();
+        $verbs = EnglishVerbs::get()->toArray();
         foreach ($verbs as $verb) {
-            $isVerbAlreadyInBase =
-                $verb['verb_in_polish'] === $data['verbInPolish'] ? true : $isVerbAlreadyInBase ;
-            $isVerbAlreadyInBase =
-                $verb['verb_in_infinitive'] === $data['verbInInfinitive'] ? true : $isVerbAlreadyInBase ;
-            $isVerbAlreadyInBase =
-                $verb['verb_in_past_simple'] === $data['verbInPastSimple'] ? true : $isVerbAlreadyInBase ;
-            $isVerbAlreadyInBase =
-                $verb['verb_in_past_participle'] === $data['verbInPastParticiple'] ? true : $isVerbAlreadyInBase ;
+            $isVerbAlreadyInBase = $verb['verb_in_polish'] === $data['verbInPolish'];
         }
         if (!$isVerbAlreadyInBase) {
-            Verb::insert([
-                'verb_in_polish' => $data['verbInPolish'],
-                'verb_in_infinitive' => $data['verbInInfinitive'],
-                'verb_in_past_simple' => $data['verbInPastSimple'],
-                'verb_in_past_participle' => $data['verbInPastParticiple'],
-                'additional_description' => $data['additionalDescription'],
-            ]);
+            $englishVerbs = new EnglishVerbs();
+            $englishVerbs->verb_in_polish = $data['verbInPolish'];
+            $englishVerbs->verb_in_infinitive = $data['verbInInfinitive'];
+            $englishVerbs->verb_in_past_simple = $data['verbInPastSimple'];
+            $englishVerbs->verb_in_past_participle = $data['verbInPastParticiple'];
+            $englishVerbs->additional_description = $data['additionalDescription'];
+            $englishVerbs->save();
             Alert::success(sprintf('Pomyślnie dodano czasownik do bazy!'));
         } else {
             Alert::error(sprintf('Jest już taki czasownik w bazie!'));

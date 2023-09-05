@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Orchid\Screens\VerbsLearningScreenx;
+use App\Orchid\Screens\English\VerbsLearningScreenx;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 

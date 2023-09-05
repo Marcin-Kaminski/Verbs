@@ -2,23 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Orchid\Screens\AddVerbScreen;
-use App\Orchid\Screens\Examples\ExampleActionsScreen;
-use App\Orchid\Screens\Examples\ExampleCardsScreen;
-use App\Orchid\Screens\Examples\ExampleChartsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsScreen;
-use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
-use App\Orchid\Screens\Examples\ExampleScreen;
-use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\English\AddVerbScreen;
+use App\Orchid\Screens\English\VerbsLearningScreenx;
+use App\Orchid\Screens\English\VerbsListScreen;
+use App\Orchid\Screens\Norwegian\AddWordScreen;
+use App\Orchid\Screens\Norwegian\LearningScreen;
+use App\Orchid\Screens\Norwegian\WordsListScreen;
 use App\Orchid\Screens\PlatformScreen;
-use App\Orchid\Screens\Role\RoleEditScreen;
-use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
-use App\Orchid\Screens\VerbsLearningScreenx;
-use App\Orchid\Screens\VerbsListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -65,36 +58,8 @@ Route::screen('users', UserListScreen::class)
         ->parent('platform.index')
         ->push(__('Users'), route('platform.systems.users')));
 
-// Platform > System > Roles > Role
-Route::screen('roles/{role}/edit', RoleEditScreen::class)
-    ->name('platform.systems.roles.edit')
-    ->breadcrumbs(fn (Trail $trail, $role) => $trail
-        ->parent('platform.systems.roles')
-        ->push($role->name, route('platform.systems.roles.edit', $role)));
-
-// Platform > System > Roles > Create
-Route::screen('roles/create', RoleEditScreen::class)
-    ->name('platform.systems.roles.create')
-    ->breadcrumbs(fn (Trail $trail) => $trail
-        ->parent('platform.systems.roles')
-        ->push(__('Create'), route('platform.systems.roles.create')));
-
-// Platform > System > Roles
-Route::screen('roles', RoleListScreen::class)
-    ->name('platform.systems.roles')
-    ->breadcrumbs(fn (Trail $trail) => $trail
-        ->parent('platform.index')
-        ->push(__('Roles'), route('platform.systems.roles')));
-
-// Example...
-Route::screen('example', ExampleScreen::class)
-    ->name('platform.example')
-    ->breadcrumbs(fn (Trail $trail) => $trail
-        ->parent('platform.index')
-        ->push('Example Screen'));
-
 Route::screen('addVerb', AddVerbScreen::class)
-            ->name('platform.add.verb')
+            ->name('platform.verbs.add')
             ->breadcrumbs(function (Trail $trail) {
                 return $trail
                     ->parent('platform.index')
@@ -117,15 +82,37 @@ Route::screen('verbsLearning', VerbsLearningScreenx::class)
                     ->push('verbsLearning');
             });
 
-Route::screen('/form/examples/fields', ExampleFieldsScreen::class)->name('platform.example.fields');
-Route::screen('/form/examples/advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
-Route::screen('/form/examples/editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
-Route::screen('/form/examples/actions', ExampleActionsScreen::class)->name('platform.example.actions');
+Route::screen('addWord', AddWordScreen::class)
+    ->name('platform.words.add')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('wordsLearning');
+    });
 
-Route::screen('/layout/examples/layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
-Route::screen('/charts/examples/charts', ExampleChartsScreen::class)->name('platform.example.charts');
-Route::screen('/cards/examples/cards', ExampleCardsScreen::class)->name('platform.example.cards');
-Route::screen('verb/add', AddVerbScreen::class)->name('platform.verb.add');
-Route::screen('verbs/list', VerbsListScreen::class)->name('platform.verbs.list');
-Route::screen('verbs/learn', VerbsLearningScreenx::class)->name('platform.verbs.learn');
+Route::screen('wordsList', WordsListScreen::class)
+    ->name('platform.words.list')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('wordsList');
+    });
+
+Route::screen('Learning', LearningScreen::class)
+    ->name('platform.learning')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('wordsLearning');
+    });
+
+
+
+Route::screen('english/verb/add', AddVerbScreen::class)->name('platform.english.verbs.add');
+Route::screen('english/verbs/list', VerbsListScreen::class)->name('platform.english.verbs.list');
+Route::screen('english/verbs/learn', VerbsLearningScreenx::class)->name('platform.english.verbs.learn');
+Route::screen('norwegian/words/learn', LearningScreen::class)->name('platform.norwegian.words.learn');
+Route::screen('norwegian/words/list', WordsListScreen::class)->name('platform.norwegian.words.list');
+Route::screen('norwegian/words/add', AddWordScreen::class)->name('platform.norwegian.words.add');
+
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
