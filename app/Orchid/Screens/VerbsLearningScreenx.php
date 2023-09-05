@@ -153,7 +153,7 @@ class VerbsLearningScreenx extends Screen
         ]);
         $verbForm = $request->input('learningMode');
         Cache::put('verb_form', $verbForm, now()->addHours(24));
-        $howManyTimesBeforeItIsGone = $request->input('howManyTimesBeforeItIsGone'); /** @todo dokończ */
+        $howManyTimesBeforeItIsGone = $request->input('howManyTimesBeforeItIsGone');
         Cache::put('howManyTimesBeforeItIsGone', $howManyTimesBeforeItIsGone, now()->addHours(24));
     }
 
