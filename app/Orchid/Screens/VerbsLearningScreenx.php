@@ -22,6 +22,7 @@ class VerbsLearningScreenx extends Screen
     private string $randomVerbInPastSimple;
     private string $randomVerbInPastParticiple;
     private int $howManyTimesBeforeItIsGone = 1;
+
     /**
      * Fetch data to be displayed on the screen.
      *
@@ -34,24 +35,27 @@ class VerbsLearningScreenx extends Screen
             $this->addAllVerbsToCache();
             $verbsLeftToLearn = Cache::get('verbs_left_to_learn');
         }
-
         $randomVerb = (Cache::get('random_verb'));
         if (!$randomVerb) {
             $this->drawAndSaveVerbToCache($verbsLeftToLearn);
             $randomVerb = (Cache::get('random_verb'));
         }
-
+//        dd($randomVerb);
         $verbForm = (Cache::get('verb_form'));
         $verbForm = !$verbForm ? 'verb_in_polish' : $verbForm;
+        $allErrors = (Cache::get('all_errors'));
+        $allErrors = !$allErrors ? 0 : $allErrors;
 
         return [
             'verbs' => [
-                'verb_in_polish' => $this->randomVerbInPolish = $randomVerb['polish'],
-                'verb_in_infinitive' => $this->randomVerbInInfinitive = $randomVerb['infinitive'],
-                'verb_in_past_simple' => $this->randomVerbInPastSimple = $randomVerb['past_simple'],
-                'verb_in_past_participle' => $this->randomVerbInPastParticiple = $randomVerb['past_participle']
+                'verb_in_polish' => $this->randomVerbInPolish = $randomVerb['verb_in_polish'],
+                'verb_in_infinitive' => $this->randomVerbInInfinitive = $randomVerb['verb_in_infinitive'],
+                'verb_in_past_simple' => $this->randomVerbInPastSimple = $randomVerb['verb_in_past_simple'],
+                'verb_in_past_participle' => $this->randomVerbInPastParticiple = $randomVerb['verb_in_past_participle'],
+                'errors' => $randomVerb['errors']
             ],
-            'verbForm' => $verbForm
+            'verbForm' => $verbForm,
+            'allErrors' => $allErrors
         ];
     }
     public function name(): ?string
@@ -76,7 +80,7 @@ class VerbsLearningScreenx extends Screen
             ModalToggle::make('Pokaż odpowiedzi')
                 ->type(Color::ERROR)
                 ->modal('Tłumaczenie'),
-            Button::make('wyczyść cache')
+            Button::make('Zresetuj dane')
                 ->type(Color::PRIMARY)
                 ->method('clearCache'),
             ModalToggle::make('Ustawienia')
@@ -123,16 +127,16 @@ class VerbsLearningScreenx extends Screen
             Layout::view('script'),
             Layout::block([
                 Layout::rows([
-                    Input::make('verbInPolish')
+                    Input::make('verb_in_polish')
                         ->title('PL')
                         ->autocomplete('off'),
-                    Input::make('verbInInfinitive')
+                    Input::make('verb_in_infinitive')
                         ->title('Infinitive')
                         ->autocomplete('off'),
-                    Input::make('verbInPastSimple')
+                    Input::make('verb_in_past_simple')
                         ->title('Past Simple')
                         ->autocomplete('off'),
-                    Input::make('verbInPastParticiple')
+                    Input::make('verb_in_past_participle')
                         ->title('Past Participle')
                         ->autocomplete('off'),
                 ])
@@ -165,19 +169,55 @@ class VerbsLearningScreenx extends Screen
 
     public function checkTranslation(Request $request): void
     {
-        $verbInInfinitiveInput = $request->input('verbInInfinitive');
-        $verbInPastSimpleInput = $request->input('verbInPastSimple');
-        $verbInPastParticipleInput = $request->input('verbInPastParticiple');
+        $verbInPolishInput = $request->input('verb_in_polish');
+        $verbInInfinitiveInput = $request->input('verb_in_infinitive');
+        $verbInPastSimpleInput = $request->input('verb_in_past_simple');
+        $verbInPastParticipleInput = $request->input('verb_in_past_participle');
 
         $randomVerb = Cache::get('random_verb');
-        $randomVerbInPolish = $randomVerb['polish'];
-        $randomVerbInInfinitive = $randomVerb['infinitive'];
-        $randomVerbInPastSimple = $randomVerb['past_simple'];
-        $randomVerbInPastParticiple = $randomVerb['past_participle'];
 
-        if (ucfirst($verbInInfinitiveInput) === $randomVerbInInfinitive &&
-            ucfirst($verbInPastSimpleInput) === $randomVerbInPastSimple &&
-            ucfirst($verbInPastParticipleInput) === $randomVerbInPastParticiple) {
+        $randomVerbInPolish = $randomVerb['verb_in_polish'];
+        $randomVerbInInfinitive = $randomVerb['verb_in_infinitive'];
+        $randomVerbInPastSimple = $randomVerb['verb_in_past_simple'];
+        $randomVerbInPastParticiple = $randomVerb['verb_in_past_participle'];
+
+        $verbForm = Cache::get('verb_form');
+        switch ($verbForm) {
+            case 'verb_in_infinitive':
+                $input1 = $verbInPolishInput;
+                $comparator1 = $randomVerbInPolish;
+                $input2 = $verbInPastSimpleInput;
+                $comparator2 = $randomVerbInPastSimple;
+                $input3 = $verbInPastParticipleInput;
+                $comparator3 = $randomVerbInPastParticiple;
+                break;
+            case 'verb_in_past_simple':
+                $input1 = $verbInInfinitiveInput;
+                $comparator1 = $randomVerbInInfinitive;
+                $input2 = $verbInPolishInput;
+                $comparator2 = $randomVerbInPolish;
+                $input3 = $verbInPastParticipleInput;
+                $comparator3 = $randomVerbInPastParticiple;
+                break;
+            case 'verb_in_past_participle':
+                $input1 = $verbInInfinitiveInput;
+                $comparator1 = $randomVerbInInfinitive;
+                $input2 = $verbInPolishInput;
+                $comparator2 = $randomVerbInPolish;
+                $input3 = $verbInPastSimpleInput;
+                $comparator3 = $randomVerbInPastSimple;
+                break;
+            default:
+                $input1 = $verbInInfinitiveInput;
+                $comparator1 = $randomVerbInInfinitive;
+                $input2 = $verbInPastSimpleInput;
+                $comparator2 = $randomVerbInPastSimple;
+                $input3 = $verbInPastParticipleInput;
+                $comparator3 = $randomVerbInPastParticiple;
+        }
+        if (ucfirst($input1) === $comparator1 &&
+            ucfirst($input2) === $comparator2 &&
+            ucfirst($input3) === $comparator3) {
             Alert::success('Sukces! prawidłowe tłumaczenie! Spróbuj z kolejnym!');
             $howManyTimes = $this->incrementVerbHowManyTimes($randomVerbInPolish);
             if ($howManyTimes === $this->howManyTimesBeforeItIsGone) {
@@ -185,7 +225,23 @@ class VerbsLearningScreenx extends Screen
             }
             $this->drawVerb();
         } else {
+            $this->incrementVerbErrorsCount($randomVerbInPolish);
             Alert::error('Niestety tym razem się nie udało. Spróbuj ponownie!');
+        }
+    }
+
+    public function incrementVerbErrorsCount(string $verbToAddErrorTo)
+    {
+        $availableVerbs = Cache::get('verbs_left_to_learn');
+        foreach ($availableVerbs as $key => $verb) {
+            if ($verb['verb_in_polish'] === strtolower($verbToAddErrorTo)) {
+                $availableVerbs[$key]['errors']++;
+                $allErrors = Cache::get('all_errors');
+                $allErrors++;
+                Cache::put('all_errors', $allErrors, now()->addHours(24));
+                Cache::put('verbs_left_to_learn', $availableVerbs, now()->addHours(24));
+                Cache::put('random_verb', $availableVerbs[$key], now()->addHours(24));
+            }
         }
     }
 
@@ -200,11 +256,11 @@ class VerbsLearningScreenx extends Screen
         Cache::put('verbs_left_to_learn', $availableVerbs, now()->addHours(24));
     }
 
-    public function incrementVerbHowManyTimes(string $verbToRemove): int
+    public function incrementVerbHowManyTimes(string $verbToIncrement): int
     {
         $availableVerbs = Cache::get('verbs_left_to_learn');
         foreach ($availableVerbs as $key => $verb) {
-            if ($verb['verb_in_polish'] === strtolower($verbToRemove)) {
+            if ($verb['verb_in_polish'] === strtolower($verbToIncrement)) {
                 $availableVerbs[$key]['how_many_times']++;
                 Cache::put('verbs_left_to_learn', $availableVerbs, now()->addHours(24));
                 return $availableVerbs[$key]['how_many_times'];
@@ -220,13 +276,19 @@ class VerbsLearningScreenx extends Screen
 
     public function drawAndSaveVerbToCache($verbsArray): void
     {
+        if (empty($verbsArray)) {
+            Alert::success('Brawo! Poprawnie powtórzyłeś wszystkie czasowniki! Zaczynam losować od nowa!');
+            $this->addAllVerbsToCache();
+            $verbsArray = Cache::get('verbs_left_to_learn');
+        }
         $randomKey = array_rand($verbsArray);
         $randomVerb = [
-            'polish' => ucfirst($verbsArray[$randomKey]['verb_in_polish']),
-            'infinitive' => ucfirst($verbsArray[$randomKey]['verb_in_infinitive']),
-            'past_simple' => ucfirst($verbsArray[$randomKey]['verb_in_past_simple']),
-            'past_participle' => ucfirst($verbsArray[$randomKey]['verb_in_past_participle']),
-            'how_many_times' => $verbsArray[$randomKey]['how_many_times']
+            'verb_in_polish' => ucfirst($verbsArray[$randomKey]['verb_in_polish']),
+            'verb_in_infinitive' => ucfirst($verbsArray[$randomKey]['verb_in_infinitive']),
+            'verb_in_past_simple' => ucfirst($verbsArray[$randomKey]['verb_in_past_simple']),
+            'verb_in_past_participle' => ucfirst($verbsArray[$randomKey]['verb_in_past_participle']),
+            'how_many_times' => $verbsArray[$randomKey]['how_many_times'],
+            'errors' => $verbsArray[$randomKey]['errors']
         ];
         Cache::put('random_verb', $randomVerb, now()->addHours(24));
     }

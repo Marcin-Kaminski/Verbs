@@ -95,14 +95,14 @@ class VerbsListScreen extends Screen
                                 return Button::make('Usuń czasownik')
                                    ->type(Color::ERROR())
                                    ->method('editVerb')
-                                   ->confirm('Jesteś pewny, że chcesz usunąć ten czasownik z bazy?');
+                                   ->confirm('Jesteś pewny, że chcesz usunąć ten czasownik z bazy?');
                             }),
                     ]),
                 ])
             ])
         ];
     }
-    public function delete(Verb $verb)
+    public function delete(Verb $verb): void
     {
         $verb->delete();
     }
