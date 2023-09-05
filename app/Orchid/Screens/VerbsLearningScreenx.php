@@ -153,7 +153,7 @@ class VerbsLearningScreenx extends Screen
         ]);
         $verbForm = $request->input('learningMode');
         Cache::put('verb_form', $verbForm, now()->addHours(24));
-        $howManyTimesBeforeItIsGone = $request->input('howManyTimesBeforeItIsGone'); /** @todo dokończ*/
+        $howManyTimesBeforeItIsGone = $request->input('howManyTimesBeforeItIsGone'); /** @todo dokończ */
         Cache::put('howManyTimesBeforeItIsGone', $howManyTimesBeforeItIsGone, now()->addHours(24));
     }
 
@@ -230,7 +230,7 @@ class VerbsLearningScreenx extends Screen
         }
     }
 
-    public function incrementVerbErrorsCount(string $verbToAddErrorTo)
+    public function incrementVerbErrorsCount(string $verbToAddErrorTo): void
     {
         $availableVerbs = Cache::get('verbs_left_to_learn');
         foreach ($availableVerbs as $key => $verb) {
@@ -256,7 +256,7 @@ class VerbsLearningScreenx extends Screen
         Cache::put('verbs_left_to_learn', $availableVerbs, now()->addHours(24));
     }
 
-    public function incrementVerbHowManyTimes(string $verbToIncrement): int
+    public function incrementVerbHowManyTimes(string $verbToIncrement): mixed
     {
         $availableVerbs = Cache::get('verbs_left_to_learn');
         foreach ($availableVerbs as $key => $verb) {
