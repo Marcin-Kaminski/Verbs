@@ -23,7 +23,7 @@ class WordsListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'words' => NorwegianWords::latest()->get()
+            'words' => NorwegianWords::latest()->paginate(50)
         ];
     }
 
@@ -34,7 +34,7 @@ class WordsListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Lista czasowników';
+        return 'Lista słówek';
     }
 
 
@@ -57,8 +57,8 @@ class WordsListScreen extends Screen
     {
         return [
             Layout::tabs([
-                'Lista Czasowników' => ([
-                    Layout::modal('Edytuj czasownik', [
+                'Lista Słówek' => ([
+                    Layout::modal('Edytuj słowo', [
                         Layout::rows([
                             Input::make('editWordInPolish')
                                 ->autocomplete('off')
@@ -67,15 +67,15 @@ class WordsListScreen extends Screen
                                 ->autocomplete('off')
                                 ->title('Infinitive'),
                         ]),
-                    ])->title('Edytuj wybrany czasownik. Jeśli nic nie wpiszesz, to nic sie nie zmieni.'),
+                    ])->title('Edytuj wybrany słowo. Jeśli nic nie wpiszesz, to nic sie nie zmieni.'),
                     Layout::table('words', [
                         TD::make('word_in_polish', 'Polski'),
                         TD::make('word_in_norwegian', 'Norweski'),
                         TD::make('edytuj')
                             ->align('right')
                             ->render(function (NorwegianWords $word) {
-                                return  ModalToggle::make('Edytuj czasownik')
-                                    ->modal('Edytuj czasownik')
+                                return  ModalToggle::make('Edytuj słowo')
+                                    ->modal('Edytuj słowo')
                                     ->type(Color::INFO)
                                     ->method('editWord', ['id' => $word->id])
                                     ->icon('full-screen');
@@ -83,10 +83,10 @@ class WordsListScreen extends Screen
                         TD::make('usuń')
                             ->align('right')
                             ->render(function (NorwegianWords $word) {
-                                return Button::make('Usuń czasownik')
+                                return Button::make('Usuń słowo')
                                     ->type(Color::ERROR())
                                     ->method('editWord')
-                                    ->confirm('Jesteś pewny, że chcesz usunąć ten czasownik z bazy?');
+                                    ->confirm('Jesteś pewny, że chcesz usunąć ten słowo z bazy?');
                             }),
                     ]),
                 ])
@@ -112,8 +112,7 @@ class WordsListScreen extends Screen
             $flag = true;
         }
         NorwegianWords::where('id', $wordId)->update($updates);
-        $flag ? Alert::success(sprintf('Pomyślnie zedytowano czasownik'))
+        $flag ? Alert::success(sprintf('Pomyślnie zedytowano słowo'))
             : Alert::error(sprintf('Nie podano żadnych wartości do zedytowania'));
     }
 }
-

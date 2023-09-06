@@ -25,40 +25,20 @@ class LearningScreen extends Screen
      */
     public function query(): iterable
     {
-        $wordsLeftToLearn = Cache::get('words_left_to_learn') /** @todo rozbić to jakoś na funckje, to nie powinno tu chyba być */;
-        if (!$wordsLeftToLearn) { /** @todo sprawdź, czy jak klikniesz zresetuj dane to sie restuje ilość powtórzen i typ nauki i ogolnie */
-            $this->addAllWordsToCache();
-            $wordsLeftToLearn = Cache::get('words_left_to_learn');
-        }
-        $randomWord = (Cache::get('random_word'));
-        if (!$randomWord) {
-            $this->drawAndSaveWordToCache($wordsLeftToLearn);
-            $randomWord = (Cache::get('random_word'));
-        }
-
-        $wordForm = (Cache::get('word_form'));
-        $wordForm = !$wordForm ? 'word_in_polish' : $wordForm;
-
-        $allErrors = (Cache::get('all_errors'));
-        $allErrors = !$allErrors ? 0 : $allErrors;
-
-        $howManyTimesBeforeItIsGone = Cache::get('repeatCounter');
-        $howManyTimesBeforeItIsGone === null
-            ? Cache::put('repeatCounter', 1, now()->addHours(24)): $howManyTimesBeforeItIsGone;
-
+        $data = $this->getAllCache();
         return [
             'words' => [
-                'word_in_polish' => $randomWord['word_in_polish'],
-                'word_in_norwegian' => $randomWord['word_in_norwegian'],
-                'errors' => $randomWord['errors']
+                'word_in_polish' => $data['random_word']['word_in_polish'],
+                'word_in_norwegian' => $data['random_word']['word_in_norwegian'],
+                'errors' => $data['random_word']['errors']
             ],
-            'wordForm' => $wordForm,
-            'allErrors' => $allErrors
+            'wordForm' => $data['word_form'],
+            'allErrors' => $data['all_errors']
         ];
     }
     public function name(): ?string
     {
-        return 'Szybka powtórka z angielskiego';
+        return 'Szybka powtórka z Norweskiego';
     }
 
     /**
@@ -132,7 +112,50 @@ class LearningScreen extends Screen
                 ])
             ])];
     }
+    public function getAllCache()
+    {
+        $wordsLeftToLearn = Cache::get('words_left_to_learn');
+        if (!$wordsLeftToLearn) {
+            $this->addAllWordsToCache();
+            $wordsLeftToLearn = Cache::get('words_left_to_learn');
+        }
+        $randomWord = (Cache::get('random_word'));
+        if (!$randomWord) {
+            $this->drawAndSaveWordToCache($wordsLeftToLearn);
+            $randomWord = (Cache::get('random_word'));
+        }
 
+        $wordForm = (Cache::get('word_form'));
+        $wordForm = !$wordForm ? 'word_in_polish' : $wordForm;
+
+        $allErrors = (Cache::get('all_errors'));
+        $allErrors = !$allErrors ? 0 : $allErrors;
+
+        $howManyTimesBeforeItIsGone = Cache::get('repeatCounter');
+        $howManyTimesBeforeItIsGone === null ? Cache::put('repeatCounter', 1, now()->addHours(24)) : '';
+        if ($howManyTimesBeforeItIsGone === null) {
+            Cache::put('repeatCounter', 1, now()->addHours(24));
+        }
+
+        return [
+          'random_word' => $randomWord,
+          'word_form' => $wordForm,
+          'all_errors' => $allErrors
+        ];
+    }
+    public function replaceNorwegianAlphabet(string $sentence)
+    {
+        $lettersToSwap = [
+            'æ' => 'ae',
+            'ø' => 'o',
+            'å' => 'a',
+        ];
+        $pattern = '/[' . preg_quote(implode('', array_keys($lettersToSwap)), '/') . ']/u';
+        $sentence = preg_replace_callback($pattern, function ($match) use ($lettersToSwap) {
+            return $lettersToSwap[$match[0]];
+        }, $sentence);
+        return $sentence;
+    }
     public function changeSettings(Request $request): void
     {
         $request->validate([
@@ -165,7 +188,7 @@ class LearningScreen extends Screen
         $randomWord = Cache::get('random_word');
 
         $randomWordInPolish = $randomWord['word_in_polish'];
-        $randomWordInNorwegian = $randomWord['word_in_norwegian'];
+        $randomWordInNorwegian = $this->replaceNorwegianAlphabet($randomWord['word_in_norwegian']);
 
         $wordForm = Cache::get('word_form');
         switch ($wordForm) {
@@ -238,6 +261,7 @@ class LearningScreen extends Screen
     {
         if (empty($wordsArray)) {
             Alert::success('Brawo! Poprawnie powtórzyłeś wszystkie czasowniki! Zaczynam losować od nowa!');
+            $this->clearCache();
             $this->addAllWordsToCache();
             $wordsArray = Cache::get('words_left_to_learn');
         }

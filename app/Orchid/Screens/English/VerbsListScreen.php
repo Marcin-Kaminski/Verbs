@@ -23,7 +23,7 @@ class VerbsListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'verbs' => EnglishVerbs::latest()->get()
+            'verbs' => EnglishVerbs::latest()->paginate(50)
         ];
     }
 

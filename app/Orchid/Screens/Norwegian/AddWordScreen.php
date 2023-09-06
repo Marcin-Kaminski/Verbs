@@ -70,10 +70,10 @@ class AddWordScreen extends Screen
                                 ->required(),
                         ])
                     ])->commands(
-                            Button::make('Zapisz wyraz do bazy')
+                        Button::make('Zapisz wyraz do bazy')
                                 ->type(Color::PRIMARY())
                                 ->method('addWordToDatabase')
-                        )
+                    )
                 ],
             ])
         ];
@@ -91,9 +91,9 @@ class AddWordScreen extends Screen
             $norwegianWords->word_in_polish = ucfirst($data['word_in_polish']);
             $norwegianWords->word_in_norwegian = ucfirst($data['word_in_norwegian']);
             $norwegianWords->save();
-            Alert::success(sprintf('Pomyślnie dodano czasownik do bazy!'));
+            Alert::success(sprintf('Pomyślnie dodano słowo do bazy!'));
         } else {
-            Alert::error(sprintf('Jest już taki czasownik w bazie!'));
+            Alert::error(sprintf('Jest już takie słowo w bazie!'));
         }
     }
 }
