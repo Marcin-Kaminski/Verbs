@@ -95,7 +95,7 @@ class WordsListScreen extends Screen
     }
     public function delete(NorwegianWords $word): void
     {
-        $word->delete(); // TEST
+        $word->delete();
     }
     public function editWord(Request $request)
     {
